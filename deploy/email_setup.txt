@@ -1,0 +1,14 @@
+Send email to a verified user: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/getting-started-send-from-console.html
+
+Where to verify email addresses: https://us-west-2.console.aws.amazon.com/ses/home?region=us-west-2#verified-senders-email:
+Attach a policy to a particular user: https://console.aws.amazon.com/iam/home?#users/arithmetic
+Simulating the policy: https://policysim.aws.amazon.com/home/index.jsp?#users/arithmetic/AmazonSESFullAccess
+
+Monitoring email usage: https://console.aws.amazon.com/ses/home?region=us-east-1#dashboard:
+
+Sending email with boto: https://boto.readthedocs.org/en/latest/ses_tut.html
+boto config: https://boto.readthedocs.org/en/latest/boto_config_tut.html
+
+Increasing SES email usage (not used yet): https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html
+Sending via SMTP (not used yet): http://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-smtp.html
+Example script (not used): http://serverfault.com/questions/566928/python-script-to-send-mail-through-amazon-ses
