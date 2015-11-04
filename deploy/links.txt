@@ -1,0 +1,29 @@
+Shiny Examples:
+https://github.com/rstudio
+https://www.rstudio.com/products/shiny/shiny-user-showcase/
+https://pmaier1971.shinyapps.io/AutomatedForecastingWithShiny/
+http://www.showmeshiny.com/economic-dashboard/
+
+
+AWS Getting Started: https://aws.amazon.com/getting-started/
+AWS CLI: http://docs.aws.amazon.com/cli/latest/userguide/tutorial-ec2-ubuntu.html
+AWS ssh: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html
+AWS webapp: http://docs.aws.amazon.com/gettingstarted/latest/wah-linux/web-app-hosting-intro.html#tutorial-contents
+AWS GitHub CodeDeploy: http://docs.aws.amazon.com/codedeploy/latest/userguide/github-integ.html
+AWS console: https://console.aws.amazon.com/billing/home?#/
+AWS DynamoDB: https://aws.amazon.com/dynamodb/
+
+# http://www.fintechinnovationlabnyc.com/portfolio.aspx
+
+Python BigData: https://www.airpair.com/python/posts/top-mistakes-python-big-data-analytics
+Bcolz: http://blosc.org/docs/bcolz-EuroPython-2014.pdf
+http://nbviewer.ipython.org/github/Blosc/movielens-bench/blob/master/querying-ep14.ipynb
+Luigi: https://github.com/spotify/luigi
+
+Deep Learning:
+http://videolectures.net/deeplearning2015_salakhutdinov_deep_learning/
+http://videolectures.net/deeplearning2015_salakhutdinov_deep_learning_2/
+http://www.cs.toronto.edu/~rsalakhu/talk_Montreal_part1_pdf.pdf
+http://www.cs.toronto.edu/~rsalakhu/talk_Montreal_part2_pdf.pdf
+http://phys.org/news/2015-10-human-intuition-algorithms-outperforms-teams.html
+http://groups.csail.mit.edu/EVO-DesignOpt/groupWebSite/uploads/Site/DSAA_DSM_2015.pdf
