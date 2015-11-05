@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # Collect weight watchers locations
 
+# References: http://toddhayton.com/2015/03/11/scraping-ajax-pages-with-python/
+#             http://stackoverflow.com/questions/9746303/how-do-i-send-a-post-request-as-a-json
+#             http://stackoverflow.com/questions/13303449/urllib2-httperror-http-error-403-forbidden
+
 import json
 import requests
 
