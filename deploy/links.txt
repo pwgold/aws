@@ -1,3 +1,5 @@
+http://www.charlesproxy.com/download/
+
 Shiny Examples:
 https://github.com/rstudio
 https://www.rstudio.com/products/shiny/shiny-user-showcase/
@@ -27,3 +29,7 @@ http://www.cs.toronto.edu/~rsalakhu/talk_Montreal_part1_pdf.pdf
 http://www.cs.toronto.edu/~rsalakhu/talk_Montreal_part2_pdf.pdf
 http://phys.org/news/2015-10-human-intuition-algorithms-outperforms-teams.html
 http://groups.csail.mit.edu/EVO-DesignOpt/groupWebSite/uploads/Site/DSAA_DSM_2015.pdf
+
+
+# AggData
+https://www.aggdata.com/aggdata/complete-list-weight-watchers-locations
