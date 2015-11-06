@@ -1,4 +1,6 @@
-from lib import *  
+import sys
+from BeautifulSoup import BeautifulSoup
+import mech
 
 ''' 
 Script to check short availability (borrows) at Ameritrade. 
@@ -12,8 +14,8 @@ with a 1 if the stock is available to borrow and 0 if it's not.
 
 def print_usage():
         raise Exception('Input argument should be --tickers or --file' + '\n' + 
-                        'E.g., python at.py --tickers ATPG CALL HK JKS JRCC KSS MDP MEET NAT OIBR RRD SKUL TSTC YELP JVA WPRT ARNA' + '\n' + 
-                        'or    python at.py --file tickers.csv')
+                        'E.g., python Ameritrade.py --tickers ATPG CALL HK JKS JRCC KSS MDP MEET NAT OIBR RRD SKUL TSTC YELP JVA WPRT ARNA' + '\n' + 
+                        'or    python Ameritrade.py --file tickers.csv')
 
 '''
 Parse input. Raise exception if list of tickers is not retrieved correctly
@@ -47,8 +49,8 @@ assert 'Password' in br.response().read(), 'Not on logon page'
 
 'Ameritrade' in br.response().read()
 br.select_form(nr=0)
-br['userid'] = '####'   
-br['password'] = '####'
+br['userid'] = '******'
+br['password'] = '******'
 br.submit()
 assert 'Balances' in br.response().read(), 'not on login landing page'
 
@@ -63,7 +65,8 @@ bad_sym_cond.append('The symbol could not be found. Please contact a Broker for 
 bad_sym_cond.append('Invalid Symbol. Please enter valid symbol')
 bad_sym_cond.append('Security Not Found')
 # Available
-cond0 = 'was received' # E.g., Your Limit Order to Sell Short 1 share of spy  at  500.00 was received.
+cond0 = 'Your order was received' # E.g., Your Limit Order to Sell Short 1 share of spy  at  500.00 was received.
+cond0B = 'Your order no. is'
 cond1 = 'Short sale orders are not allowed'
 # Not Available
 cond.append('Shares of this security are currently not available to short sell')
@@ -103,20 +106,19 @@ for tk in tickers:
         print '%s,%s,%s' %(tk,0,explanation)
         continue
 
-
     assert 'Step 2 of 2' in br.response().read(), 'Not on Step 2 of trading\n%s' % br.response().read()
     br.select_form(nr=0)
    
-    # Get Ask price from html, and set limit order price to 10 times the last ask
+    # Get Ask price from html, and set limit order price to 2x the last ask
     idx = br.response().read().index('Ask')
     ask_str = br.response().read()[idx+len('Ask</b>:'):]
-    limit = float(ask_str[0:ask_str.index('<')].lstrip(' ').replace(',',''))*10
+    ask = float(ask_str[0:ask_str.index('<')].lstrip(' ').replace(',',''))
 
     # If last ask was 0, use a limit price of 100
-    if limit == 0:
+    if ask == 0:
         br['orderObj.limitPrice']='100'
     else:
-        br['orderObj.limitPrice']=str(limit)
+        br['orderObj.limitPrice']=str(ask * 2)
     br.submit()
     
     br.select_form(nr=0) # TODO: o Check what form / button you're clicking here.
@@ -135,6 +137,16 @@ for tk in tickers:
         order_no = BeautifulSoup(html).findAll('b')[6].text
         br.open('https://mobile.tdameritrade.com/wireless/cancelOrderConfirmationAction.action?orderId='+order_no)
         html = br.response().read()
+        #if 'Please press back/cancel button of your cell/pda for previous page' not in html:
+        # 'There was a problem canceling the order.(Order11984813329)'
+        # Get this message for JKS -- order is accepted and then cancelled after Pending Review
+        assert 'was submitted for cancellation' in html, 'Order not cancelled:\n%s' % html  # Here's where we cancel the submitted order.
+    if cond0B in html:
+        available = 1
+        explanation = cond0B
+        order_no = BeautifulSoup(html).findAll('b')[6].text
+        br.open('https://mobile.tdameritrade.com/wireless/cancelOrderConfirmationAction.action?orderId='+order_no)
+        html = br.response().read()
         assert 'was submitted for cancellation' in html, 'Order not cancelled:\n%s' % html  # Here's where we cancel the submitted order.
     elif cond1 in html:
         available = 1
@@ -148,4 +160,4 @@ for tk in tickers:
         else:
             raise Exception(html)
 
-    print '%s,%s,%s' %(tk,available,explanation)
+    print '%s,%s,%s,%s' %(tk,available,explanation,ask)
