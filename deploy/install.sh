@@ -17,6 +17,11 @@ do
    sudo apt-get -y install $LINE
 done
 
+##########
+# pip installs
+##########
+pip install scrapy
+
 ############################################################
 # IPython Notebook Setup: available on http://<public dns>:8888/
 ############################################################

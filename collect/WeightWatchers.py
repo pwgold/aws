@@ -126,6 +126,8 @@ if __name__ == '__main__':
         # assert len(unchecked_zips) == initial_n - len(set(checked_zips)) 
         # Verify that unchecked_zips has 1 fewer member for each zip code checked
 
-    with open(pd.datetime.now().strftime('%s')+'.json', 'wb') as f:
+    filename = pd.datetime.now().strftime('%s')+'.json'
+    data_dir = '/home/ubuntu/aws/data/WeightWatchers'
+    with open('%s/%s'%(data_dir,filename), 'wb') as f:
         f.write(json.dumps(output))
         f.write('\n') # safe to add this for readability
