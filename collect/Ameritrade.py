@@ -1,6 +1,18 @@
 import sys
 sys.path.append('/home/ubuntu/aws/src/')
 
+'''
+   262 Non-marginable stocks are not allowed for short sell
+     26 Opening transactions for this security must be placed with a broker. Please contact us.
+   2394 Shares of this security are currently not available to short sell
+    185 The system is temporarily unavailable
+      1 This order could not be placed
+   2402 You cannot short sell OTC Bulletin Board securities
+      1 You do not have enough available cash/buying power for this order
+      2 Your order was not accepted. Funds are not available
+   2513 Your order was received
+'''
+
 from BeautifulSoup import BeautifulSoup
 import mech
 import time
@@ -70,6 +82,7 @@ bad_sym_cond.append('Invalid Symbol. Please enter valid symbol')
 bad_sym_cond.append('Security Not Found')
 # just add the bad system message here as well, it *should* mean you didn't place an order
 bad_sym_cond.append('The system is temporarily unavailable, please try your request again later.')
+bad_sym_cond.append('Order entry failed. Error Unknown.')
 # Available
 cond0 = 'Your order was received' # E.g., Your Limit Order to Sell Short 1 share of spy  at  500.00 was received.
 cond0B = 'Your order no. is'
