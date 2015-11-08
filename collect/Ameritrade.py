@@ -180,7 +180,7 @@ for tk in tickers:
         print tk,e
         sys.stdout.flush()
 
-    import pandas as pd
-    filename = pd.datetime.now().strftime('%s')+'.csv'
-    data_dir = '/home/ubuntu/aws/data/Ameritrade'
-    pd.Series(output).to_csv('%s/%s'%(data_dir,filename))
+import pandas as pd
+filename = pd.datetime.now().strftime('%s')+'.csv'
+data_dir = '/home/ubuntu/aws/data/Ameritrade'
+pd.Series(output).to_csv('%s/%s'%(data_dir,filename))
