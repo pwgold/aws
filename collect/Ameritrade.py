@@ -1,18 +1,6 @@
 import sys
 sys.path.append('/home/ubuntu/aws/src/')
 
-'''
-   262 Non-marginable stocks are not allowed for short sell
-     26 Opening transactions for this security must be placed with a broker. Please contact us.
-   2394 Shares of this security are currently not available to short sell
-    185 The system is temporarily unavailable
-      1 This order could not be placed
-   2402 You cannot short sell OTC Bulletin Board securities
-      1 You do not have enough available cash/buying power for this order
-      2 Your order was not accepted. Funds are not available
-   2513 Your order was received
-'''
-
 from BeautifulSoup import BeautifulSoup
 import mech
 import time
@@ -65,8 +53,8 @@ assert 'Password' in html, 'Not on logon page'
 assert 'Ameritrade' in html
 # print html
 br.select_form(nr=0)
-br['userid'] = 'pwgold3957'
-br['password'] = 'Ar1thm3t1cF00'
+br['userid'] = '*****'
+br['password'] = '*****'
 br.submit()
 assert 'Balances' in br.response().read(), 'not on login landing page: %s'%br.response().read()
 
@@ -186,14 +174,17 @@ for tk in tickers:
             else:
                 raise Exception(html)
 
-        line = '%s,%s,%s,%s' %(tk,available,explanation,ask)
-        output.append(line)
-        print line
+        output.append([tk, available, explanation, ask])
+        print '%s,%s,%s,%s' %(tk,available,explanation,ask)
     except Exception as e:
-        print tk,e
+        output.append([tk, -1, e, -1])
+        print '%s,%s,%s,%s' %(tk,-1,e,-1)
         sys.stdout.flush()
 
 import pandas as pd
+import csv
 filename = pd.datetime.now().strftime('%s')+'.csv'
 data_dir = '/home/ubuntu/aws/data/Ameritrade'
-pd.Series(output).to_csv('%s/%s'%(data_dir,filename))
+with open('%s/%s'%(data_dir,filename), 'w') as fh:
+        writer = csv.writer(fh)
+        writer.writerows(output)
