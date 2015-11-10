@@ -1,11 +1,12 @@
 #################
 # Port Settings:
 #################
-# SSH 22
-# HTTPS 443 ?
-# Custom 8888 (IPython Notebook)
-# Custom 8787 (RStudio)
-# Custom 3838 (Shiny Server)
+# Type   | Protocol | Port Range | Source   | Purpose
+# SSH    | TCP      | 22         | Anywhere | default
+# HTTPS  | TCP      | 443        | Anywhere |  ??
+# Custom | TCP      | 8888       | Anywhere | IPython Notebook
+# Custom | TCP      | 8787       | Anywhere | RStudio
+# Custom | TCP      | 3838       | Anywhere | Shiny Server
 
 ############################################################
 # Ubuntu tools
@@ -75,7 +76,7 @@ sudo apt-get upgrade # -y might work if we fix gpg
 sudo apt-get install r-base # Ibid.
 R --version | grep 3.2.2 # verify it says ~ R version 3.2.2 (2015-08-14) -- "Fire Safety"
 
-for PKG in shiny ggplot2 rmarkdown;
+for PKG in shiny ggplot2 rmarkdown dplyr;
 do
     sudo su - -c "R -e \"install.packages('$PKG', repos='http://cran.rstudio.com/')\""
 done
