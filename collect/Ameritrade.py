@@ -69,8 +69,10 @@ bad_sym_cond.append('The symbol could not be found. Please contact a Broker for 
 bad_sym_cond.append('Invalid Symbol. Please enter valid symbol')
 bad_sym_cond.append('Security Not Found')
 # just add the bad system message here as well, it *should* mean you didn't place an order
+# TODO: o clean this up
 bad_sym_cond.append('The system is temporarily unavailable, please try your request again later.')
 bad_sym_cond.append('Order entry failed. Error Unknown.')
+bad_sym_cond.append('There was a problem canceling the order')
 # Available
 cond0 = 'Your order was received' # E.g., Your Limit Order to Sell Short 1 share of spy  at  500.00 was received.
 cond0B = 'Your order no. is'
