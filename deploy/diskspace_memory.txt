@@ -1,0 +1,7 @@
+http://stackoverflow.com/questions/6151695/ec2-instance-on-amazon-and-i-am-greeted-with-no-space-left-on-the-disk
+
+http://stackoverflow.com/questions/6151695/ec2-instance-on-amazon-and-i-am-greeted-with-no-space-left-on-the-disk
+
+http://serverfault.com/questions/633147/aws-ec2-no-space-left-on-device
+
+https://forums.aws.amazon.com/thread.jspa?threadID=94298

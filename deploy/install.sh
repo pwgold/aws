@@ -31,7 +31,6 @@ pip install scrapy
 # Anaconda: https://www.continuum.io/downloads
 # Notes: ipython notebook --no-browser
 #        then check (eg) https://ec2-54-149-185-144.us-west-2.compute.amazonaws.com:8888
-
 wget https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda-2.3.0-Linux-x86_64.sh
 bash Anaconda-2.3.0-Linux-x86_64.sh
 source .bashrc
@@ -67,7 +66,7 @@ ipython notebook --profile=nbserver
 ############################################################
 # Reference: http://www.r-bloggers.com/amazon-ec2-upgrading-r/
 sudo apt-get remove -y r-base-core
-# Add 'deb http://cran.rstudio.com/bin/linux/ubuntu trusty/' to /etc/apt/sources.list
+sudo echo 'deb http://cran.rstudio.com/bin/linux/ubuntu trusty/' >> /etc/apt/sources.list
 # Didn't try:
 # gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
 # gpg -a --export E084DAB9 | apt-key add -
@@ -76,7 +75,7 @@ sudo apt-get upgrade # -y might work if we fix gpg
 sudo apt-get install r-base # Ibid.
 R --version | grep 3.2.2 # verify it says ~ R version 3.2.2 (2015-08-14) -- "Fire Safety"
 
-for PKG in shiny ggplot2 rmarkdown dplyr;
+for PKG in shiny ggplot2 rmarkdown dplyr leaflet;
 do
     sudo su - -c "R -e \"install.packages('$PKG', repos='http://cran.rstudio.com/')\""
 done
