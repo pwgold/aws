@@ -55,6 +55,19 @@ if __name__ == '__main__':
     assert len(standard_zip_codes) == len(set(standard_zip_codes))
     standard_zip_codes_checked = pd.Series(False, index=standard_zip_codes)
     output = {} # NB: growing
+
+    # update with data already collected
+    print 'Unchecked: %s'%(len(standard_zip_codes_checked.replace(True, pd.np.nan).dropna()))
+    data = json.loads(open('/home/ubuntu/aws/data/WeightWatchers/initial_output.json.orig').read())
+    # seen_zips = [e['Address']['ZipCode'].zfill(5) for e in data.values()]
+    ## cat  weight_watcher.log* | cut -d '|' -f 1 | cut -d ' ' -f 1 | grep -v Un > weight_watcher.log.seen
+    seen_zips = pd.read_csv('weight_watchers.log.seen').values
+    print 'Prepopulating with %s locations'%(len(seen_zips))
+    for z in seen_zips:
+        standard_zip_codes_checked.ix[z] = True
+    print 'Unchecked: %s'%(len(standard_zip_codes_checked.replace(True, pd.np.nan).dropna()))
+    output.update(data)
+
     # Base case:
     unchecked_zips = standard_zip_codes_checked.replace(True, pd.np.nan).dropna()    
     while len(unchecked_zips) > 0:
@@ -90,41 +103,51 @@ if __name__ == '__main__':
                 continue            
 
         # write if non-empty
-        if len(data) > 0 and data['TotalCount'] > 0:
-            #path = '../data/20151105/%s.json'%z
-            #with open(path, 'wb') as f:
-            #    f.write(json.dumps(data))
-            #    f.write('\n') # safe to add this for readability
-            # TODO: o periodically write output
-            # NB: assuming LocationId is unique
-            retrieved_location_ids = [e['LocationId'] for e in data['meetingLocations']]
-            # verify these are unique, so safe to create dictionary below
-            assert len(retrieved_location_ids) == len(set(retrieved_location_ids))
-            retrieved_data = dict((e['LocationId'], e) for e in data['meetingLocations'])
-            # TODO: o should verify that data matches on all matching locationIds
-            output.update(retrieved_data)
-            # TODO: o save incrementally
+        if len(data) > 0:
+            if 'TotalCount' not in data.keys():
+                print '???: %s'%data
+            elif data['TotalCount'] > 0:
+                #path = '../data/20151105/%s.json'%z
+                #with open(path, 'wb') as f:
+                #    f.write(json.dumps(data))
+                #    f.write('\n') # safe to add this for readability
+                # TODO: o periodically write output
+                # NB: assuming LocationId is unique
+                retrieved_location_ids = [e['LocationId'] for e in data['meetingLocations']]
+                # verify these are unique, so safe to create dictionary below
+                assert len(retrieved_location_ids) == len(set(retrieved_location_ids))
+                # NB: convert LocationId to string b/c that is how the data is read in above
+                retrieved_data = dict((str(e['LocationId']), e) for e in data['meetingLocations'])
 
-        checked_zips = [m['Address']['ZipCode'] for m in data['meetingLocations']]
-        # NB: this list of meeting locations may contain locations also returned
-        #     in another search
-        if z not in checked_zips:
-            checked_zips += [z] # add back [z] in case it wasn't seen (i.e., no location)
-        ok_idx = [k for k in checked_zips if k in standard_zip_codes]
-        # print ok_idx
-        unrecognized_zips = [k for k in checked_zips if k not in standard_zip_codes]
-        if len(unrecognized_zips) > 0:
-            print 'Unrecognized: ' + '|'.join(unrecognized_zips)
-        standard_zip_codes_checked.ix[ok_idx] = True 
-        #standard_zip_codes_checked.ix[checked_zips] = True # NB: this may be growing & this fails
-        unchecked_zips = standard_zip_codes_checked.replace(True, pd.np.nan).dropna()            
-        print '|'.join([str(e) for e in [z, len(data['meetingLocations']), len(unchecked_zips), len(output)]])
-        sys.stdout.flush()
-        # NB: below doesn't work b/c not guaranteed that all returned checked_zips are new
-        #a,b,c = len(unchecked_zips), initial_n, len(set(checked_zips))
-        #assert a == b - c, '%s,%s,%s'%(a,b,c)
-        # assert len(unchecked_zips) == initial_n - len(set(checked_zips)) 
-        # Verify that unchecked_zips has 1 fewer member for each zip code checked
+                # TODO: o should verify that data matches on all matching locationIds
+                output.update(retrieved_data)
+                # TODO: o save incrementally
+                data_dir = '/home/ubuntu/aws/data/WeightWatchers'
+                filename = 'initial_output.json'
+                with open('%s/%s'%(data_dir,filename), 'wb') as f:
+                    f.write(json.dumps(output))
+                    f.write('\n') # safe to add this for readability
+
+            checked_zips = [m['Address']['ZipCode'] for m in data['meetingLocations']]
+            # NB: this list of meeting locations may contain locations also returned
+            #     in another search
+            if z not in checked_zips:
+                checked_zips += [z] # add back [z] in case it wasn't seen (i.e., no location)
+                ok_idx = [k for k in checked_zips if k in standard_zip_codes]
+                # print ok_idx
+                unrecognized_zips = [k for k in checked_zips if k not in standard_zip_codes]
+                if len(unrecognized_zips) > 0:
+                    print 'Unrecognized: ' + '|'.join(unrecognized_zips)
+                standard_zip_codes_checked.ix[ok_idx] = True 
+                #standard_zip_codes_checked.ix[checked_zips] = True # NB: this may be growing & this fails
+                unchecked_zips = standard_zip_codes_checked.replace(True, pd.np.nan).dropna()            
+                print '|'.join([str(e) for e in [z, len(data['meetingLocations']), len(unchecked_zips), len(output)]])
+                sys.stdout.flush()
+                # NB: below doesn't work b/c not guaranteed that all returned checked_zips are new
+                #a,b,c = len(unchecked_zips), initial_n, len(set(checked_zips))
+                #assert a == b - c, '%s,%s,%s'%(a,b,c)
+                # assert len(unchecked_zips) == initial_n - len(set(checked_zips)) 
+                # Verify that unchecked_zips has 1 fewer member for each zip code checked
 
     filename = pd.datetime.now().strftime('%s')+'.json'
     data_dir = '/home/ubuntu/aws/data/WeightWatchers'

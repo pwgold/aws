@@ -49,13 +49,13 @@ cd ../
 
 NB_USER=nbserver
 ipython profile create $NB_USER
-CONFIG="/home/ubuntu/.ipython/profile_$NB_USER/ipython_notebook_config.py"
+#CONFIG="/home/ubuntu/.ipython/profile_$NB_USER/ipython_notebook_config.py"
 # Add these lines to the config file
 #c.IPKernelApp.pylab = 'inline'
 #c.NotebookApp.certfile = '/home/ubuntu/certificates/mycert.pem'
 #c.NotebookApp.ip = '*'
-#c.NotebookApp.open_browser = False"
-#c.NotebookApp.password = 'sha1:f9b4b2742cb8:a49b862c7cc1958ef17750f0b44c6f82ffba47a6'"
+#c.NotebookApp.open_browser = False
+#c.NotebookApp.password = 'sha1:f9b4b2742cb8:a49b862c7cc1958ef17750f0b44c6f82ffba47a6'
 #c.NotebookApp.port = 8888 # NB: You'll have to open this port to"
 ipython notebook --profile=nbserver
 # importantly you should see:

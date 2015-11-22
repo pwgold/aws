@@ -3,6 +3,7 @@ from scrapy.http import HtmlResponse
 import urllib2
 import re
 from BeautifulSoup import BeautifulSoup
+import json
 
 # References:
 # http://doc.scrapy.org/en/latest/topics/selectors.html
@@ -22,7 +23,7 @@ class ConsumerAffairs(object):
         return categories
         #soup = BeautifulSoup(urllib2.urlopen(links[-1]['href']))
 
-    def get_slugs(self, soup):
+    def get_slugs(self, soup, category):
         #urllib2.urlopen('http://www.consumeraffairs.com/%s/%s.htm'%(cat,cat));
         # if compare reviews for in 
         # Top 7 of the Best Matched Identity Theft Protection Companies (privacy)
@@ -35,14 +36,16 @@ class ConsumerAffairs(object):
         slugs = [e['slug'] for e in json.loads(x)['data']]
         for e in slugs:
             try:
-                urllib2.urlopen('http://www.consumeraffairs.com/business-loans-and-financing/%s.html'%e)
-                print "OK: %s"%e
+                url = 'http://www.consumeraffairs.com/%s/%s.html'%(category, e)
+                urllib2.urlopen(url)
+                print "OK: %s"%url
             except:
                 try:
-                    urllib2.urlopen('http://www.consumeraffairs.com/business-loans-and-financing/%s.html'%e.replace('-','_'))
-                    print "Renamed: %s"%e.replace('-','_')
+                    url = 'http://www.consumeraffairs.com/%s/%s.html'%(category, e.replace('-','_'))
+                    urllib2.urlopen(url)
+                    print "Renamed: %s"%url
                 except:
-                    print 'Error: %s'%e
+                    print 'Error: %s'%url
 
     def get_review_pages(self, soup):
         review_pages = [k['href'] for k in soup.findAll('a', {'class':'review_page'})]
@@ -50,7 +53,12 @@ class ConsumerAffairs(object):
     
     def get_sub_categories(self, soup):
         sub_categories = [k.find('a')['href'] for k in soup.findAll('div',{'class':'sub-category'})]
-        print '\n'.join(['SubCategory: %s'%e for e in sub_categories])
+        if len(sub_categories) > 0:
+            print '\n'.join(['SubCategory: %s'%e for e in sub_categories])
+        else:
+            sub_categories = [e['href'] for e in soup.findAll('section')[0].findAll('a')]
+            print '\n'.join(['SubCategory_2: %s'%e for e in sub_categories])            
+
 
     def get_related_categories(self, soup):
         related_categories = [k['href'] for k in soup.find('ul', {'class':"links"}).findAll('a')]        
@@ -58,19 +66,34 @@ class ConsumerAffairs(object):
 
     def parse_categories(self, categories):
         for cat in categories:
-            html = urllib2.urlopen('http://www.consumeraffairs.com/%s/'%cat).read()
+            print '********** %s ************'%cat
+            url = 'http://www.consumeraffairs.com/%s/'%cat
+            html = urllib2.urlopen(url).read()
             soup = BeautifulSoup(html)
-            if 'Compare Reviews for' in html:
-                get_slugs(soup)
+            if 'Compare Reviews for' in html or 'Compare Reviews about' in html:
+                # autotrans is only one with Compare Reviews about
+                try:
+                    self.get_slugs(soup, cat)
+                except Exception as e:
+                    print 'Exception on Compare: %s, %s'%(url, e)
             else:
                 # Either Version 1 e.g., Computer Brands
                 # TODO: o check sub-categorey, e.g., Home > Electronics > Computers
                 if soup.find('table') is not None:   # <table class="table" id="sortableTable" >
-                    get_review_pages(soup)
+                    try:
+                        self.get_review_pages(soup)
+                    except Exception as e:
+                        print 'Exception on get_review: %s, %s'%(url, e)
                 else:
                     # or version 2 e.g., Home > Insurance and has related ctegories
-                    get_sub_categories(soup)
-                    get_related_categories(soup)
+                    try:
+                        self.get_sub_categories(soup)
+                    except Exception as e:
+                        print 'Exception on get_sub_cat: %s, %s'%(url, e)
+                    try:
+                        self.get_related_categories(soup)
+                    except Exception as e:
+                        print 'Exception on get_related_cat: %s, %s'%(url, e)
 
     # Scratch
     # [k['href'] for k in soup.find('section', {'class':'entry'}).findAll('a')]
@@ -108,6 +131,13 @@ class ConsumerAffairs(object):
         return output
 
 if __name__ == "__main__":
+
+    ca = ConsumerAffairs()
+    #categories = ca.get_categories()
+    categories = ['auto_trans']
+    ca.parse_categories(categories)
+
+    _='''
     import pandas as pd
     import json
     #import sys
@@ -147,3 +177,4 @@ if __name__ == "__main__":
                 f.write('\n') # safe to add this for readability
         except Exception as e:
             print e, company, idx
+    '''
